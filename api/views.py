@@ -3,7 +3,6 @@ import re
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import login
 
-from rest_framework.parsers import JSONParser
 from rest_framework.views import APIView
 from rest_framework import status, generics, permissions
 from rest_framework.response import Response
