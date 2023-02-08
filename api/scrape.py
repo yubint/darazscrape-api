@@ -41,6 +41,7 @@ def scrape_data(url: str) -> dict:
     real_price = price * ( 1 - discount/100)
 
     return {
+        'url': url,
         'title': title,
         'price': real_price,
         'image_url': image_url

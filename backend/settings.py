@@ -137,7 +137,6 @@ REST_FRAMEWORK = {
 }
 
 REST_KNOX = {
-    'TOKEN_TTL': None,
+    'TOKEN_TTL': timedelta(weeks=5),
     'USER_SERIALIZER': 'api.serializers.UserSerializer',
-    'TOKEN_LIMIT_PER_USER': 1,
 }

@@ -1,6 +1,5 @@
 import re
 
-from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import login
 
 from rest_framework.views import APIView
@@ -10,7 +9,7 @@ from rest_framework.response import Response
 from knox.models import AuthToken
 from knox.views import LoginView as KnoxLoginView
 
-from .models import User, Product, Price
+from .models import Product, Price
 from .serializers import ProductSerializer, UserSerializer, RegisterUserSerializer, AuthTokenSerializer
 from .scrape import scrape_data
 
@@ -41,11 +40,7 @@ class ProductCreate(APIView):
             if data.get('error'):
                 return Response(data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-            request.data['url'] = new_url
-            request.data['title'] = data.get('title')
-            request.data['image_url'] = data.get('image_url')
-
-            serializer = ProductSerializer(data = request.data)
+            serializer = ProductSerializer(data = data)
             if not serializer.is_valid():
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             product = serializer.save()
@@ -54,7 +49,25 @@ class ProductCreate(APIView):
             Price.objects.create(price = data.get('price'), product=product)
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-    
+
+class ProductDelete(APIView):
+    '''
+    Delete the products for the user 
+    '''
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, format=None):
+        product_id = request.data.get('productId')
+        if product_id is None:
+            return Response({"error":"product id not provided"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            product = Product.objects.get(pk=product_id)
+            product.users.remove(self.request.user)
+            return Response(status=status.HTTP_200_OK)
+        except Product.DoesNotExist:
+            return Response({"error":"Product does not exist"}, status=status.HTTP_400_BAD_REQUEST)
+
 class UserDetailView(generics.RetrieveAPIView):
     '''
     Get the detail about a user 
