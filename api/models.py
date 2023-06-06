@@ -39,6 +39,7 @@ class Product(models.Model):
     url = models.URLField()
     image_url = models.URLField()
     users = models.ManyToManyField('User', related_name='products')
+    inactive_days = models.IntegerField(default=0)
 
 class Price(models.Model):
     price = models.IntegerField()

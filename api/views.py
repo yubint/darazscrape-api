@@ -1,4 +1,5 @@
 import re
+import requests
 
 from django.contrib.auth import login
 
@@ -36,8 +37,9 @@ class ProductCreate(APIView):
             serializer = ProductSerializer(product)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         except Product.DoesNotExist: 
-            data = scrape_data(new_url)
-            if data.get('error'):
+            try:
+                data = scrape_data(new_url)
+            except requests.exceptions.ConnectionError or requests.exceptions.Timeout:
                 return Response(data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
             serializer = ProductSerializer(data = data)
@@ -52,7 +54,7 @@ class ProductCreate(APIView):
 
 class ProductDelete(APIView):
     '''
-    Delete the products for the user 
+    Delete the products for the user given the product id
     '''
     permission_classes = [permissions.IsAuthenticated]
 
@@ -94,7 +96,7 @@ class RegisterView(APIView):
 
 class LoginView(KnoxLoginView):
     '''
-    Login the User 
+    Login the User with keys user and password
     '''
 
     permission_classes = [permissions.AllowAny]

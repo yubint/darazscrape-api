@@ -5,16 +5,17 @@ import requests
 from bs4 import BeautifulSoup
 import lxml
 
-def scrape_data(url: str) -> dict:
+from user_agent import generate_user_agent
+
+def scrape_data(url: str, proxy = None) -> dict:
     '''
     returns title and price of an product given the daraz link
     '''
-    try:
-        markup = requests.get(url, timeout=20).text
-    except requests.exceptions.ConnectTimeout:
-        return {'error': 'Connection Tiemout'}
-    except requests.exceptions.ConnectionError:
-        return {'error': 'Connection Error'}
+    markup = requests.get(
+        url,
+        timeout=20,
+        proxies=None if proxy is None else {'https':proxy, 'http':proxy}, 
+        headers={'User-Agent': generate_user_agent()}).text
     soup = BeautifulSoup(markup, 'lxml')
     # daraz stores data in a script tag as json
     script = soup.find('script', type='text/javascript').string
@@ -46,3 +47,12 @@ def scrape_data(url: str) -> dict:
         'price': real_price,
         'image_url': image_url
     }
+
+def get_proxies() -> list:
+    h = requests.get('https://free-proxy-list.net/').text
+    soup = BeautifulSoup(h, 'lxml')
+    data = soup.find('textarea', class_= 'form-control').string
+    proxies = re.findall('[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*:[0-9]*', data)
+    print('yo')
+    return proxies
+
