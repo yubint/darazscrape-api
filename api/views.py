@@ -27,6 +27,8 @@ class ProductCreate(APIView):
         url = request.data.get('url') 
         if url is None:
             return Response({"error": "url not provided"},status=status.HTTP_400_BAD_REQUEST)
+        if 'https://daraz.com.np/products/' not in url:
+            return Response({"error":"incorrect url"}, status=status.HTTP_400_BAD_REQUEST)
         
         new_url = re.match(r'.*html', url).group() 
 

@@ -24,6 +24,7 @@ def scrape_data(url: str, proxy = None) -> dict:
 
     # using regex to search for particular json data
     data = re.search("\"{.*}\"", script)
+    print(json.loads(data.group()))
     if data is None:
         return {'error': 'Error finding the data'}
     
@@ -37,7 +38,10 @@ def scrape_data(url: str, proxy = None) -> dict:
     image_url = data.get("pdt_photo")
 
     price = int(re.search(r"\d.*\d", price_str).group().replace(',', ''))
-    discount = int(re.search(r"\d\d*", discount_str).group())
+    if discount_str:
+        discount = int(re.search(r"\d\d*", discount_str).group())
+    else:
+        discount = 0
 
     real_price = price * ( 1 - discount/100)
 
