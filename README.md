@@ -144,7 +144,7 @@ Endpoints provided below require authorization through authtoken to be accessed.
 Clone the project
 
 ```bash
-  git clone https://link-to-project
+  git clone https://github.com/yubint/darazscrape-api
 ```
 
 Go to the project directory
