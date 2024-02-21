@@ -27,10 +27,10 @@ class ProductCreate(APIView):
         url = request.data.get('url') 
         if url is None:
             return Response({"error": "url not provided"},status=status.HTTP_400_BAD_REQUEST)
-        if 'https://daraz.com.np/products/' not in url:
+        if 'https://www.daraz.com.np/products/' not in url:
             return Response({"error":"incorrect url"}, status=status.HTTP_400_BAD_REQUEST)
         
-        new_url = re.match(r'.*html', url).group() 
+        new_url = re.match(r'.*html', url).group()
 
         # If the product is already in the database then associating the user with the product else adding that product in database:
         try:
