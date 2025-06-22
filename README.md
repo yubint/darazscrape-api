@@ -7,6 +7,8 @@ It uses Celery-Beat in order to periodically update and track the prices of the 
 
 Django-Rest-Knox has been used for authentication.
 
+A Basic frontend implementation of this API: https://github.com/yubint/darazscrape-frontend
+
 ## API Reference
 
 #### Login
